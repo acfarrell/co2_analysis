@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-import matplotlib.cm
 import matplotlib.colors
 import astropy.units as u
 import cv2
@@ -162,7 +161,6 @@ def remove_corner_background(beam, corner_ratio=0.05):
     np.place(beam_clean, beam_clean < threshold, threshold)
     beam_clean -= threshold
     return beam_clean, bg_mean
-
 
 def better_box(beam, x_center, y_center, r_x, r_y, phi, mask_scale=2):
     """
@@ -409,39 +407,11 @@ def spot_plot(beam, pix_size = None, cmap='plasma'):
 
 if __name__ == "__main__":
 
-    # Test to make sure analysis is working properly
-
-    xc = 500
-    yc = 150
-    dx = 100
-    dy = 200
-    phi = np.radians(20)
-    h = 320*2
-    v = 320
-    max_value = 1023
-    noise = 20
-
-    # generate test image
-    #test1 = lbs.beam_test_image(h, v, xc, yc, dx, dy, phi, noise=noise)
-    #test2 = lbs.beam_test_image(h, v, xc-50, yc, dx*1.5, dy, phi, noise=0)
-    #test = cv2.addWeighted(test1, 0.5, test2, 0.5, 0.0)
-
-
     directory = "/home/oods/Research/AE98-99/CO2 Profiles/AE98/"
     fname = directory + "CO2_profile_data.txt"
 
     test = np.loadtxt(fname)
 
     spot_plot(test, pix_size = 2 * u.um)
-    #lbs.beam_size_plot(test, pixel_size=.08, units='mm')
-    #x_center, y_center, d_x, d_y, phi = lbs.beam_size(test)
-
-    #print(f"The center of the beam ellipse is at ({x_center:.0f}, {y_center:.0f})")
-    #print(f"The ellipse radius (closest to horizontal) is {d_x*2/2:.0f} mm")
-    #print(f"The ellipse radius (closest to vertical) is {d_y*2/2:.0f} mm")
-    #print("The ellipse is rotated %.0f° ccw from horizontal" % (phi*180/3.1416))
-
-    plt.show()
-    plt.close()
 
    
