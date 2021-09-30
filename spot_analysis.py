@@ -281,11 +281,12 @@ def coordinate_to_index(x,y, extent, scale = 1):
     
     return x_idx, y_idx
 
-def spot_plot(beam, pix_size = None, cmap='plasma'):
+def spot_plot(beam, pix_size = None, cmap='plasma', just_spot=False):
     plt.rc('axes', labelsize=8, titlesize=10)
     plt.rc('legend', fontsize=8, handlelength=1)
     plt.rc('xtick', labelsize=6) 
     plt.rc('ytick', labelsize=6)
+    plt.rc('pcolor', shading='auto')
 
     x_center, y_center, r_x, r_y, phi = beam_size(beam, pix_size)
 
@@ -303,16 +304,21 @@ def spot_plot(beam, pix_size = None, cmap='plasma'):
         unit = pix_size.unit
         label = "Distance from Center (%s)" % unit
     
+    if just_spot:
+        fig, ax2 = plt.subplots()
+        # Show profile of spot along ellipse axes
+    else:
+        # Show all four plots (original, spot check, and profile along each principal axis)
+        fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2, 2, figsize=(8,8))
 
-    fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2, 2, figsize=(8,8))
-    # original image
-    img1 = ax1.imshow(beam, cmap=cmap, vmin=0, vmax = np.max(beam))
-    ax1.set_xlabel('Position (pixels)')
-    ax1.set_ylabel('Position (pixels)')
-    ax1.set_title("Original Image")
-    divider = make_axes_locatable(ax1)
-    cax1 = divider.append_axes("right", size="5%", pad=0.05)
-    fig.colorbar(img1, cax=cax1)
+        # show original image
+        img1 = ax1.imshow(beam, cmap=cmap, vmin=0, vmax = np.max(beam))
+        ax1.set_xlabel('Position (pixels)')
+        ax1.set_ylabel('Position (pixels)')
+        ax1.set_title("Original Image")
+        divider = make_axes_locatable(ax1)
+        cax1 = divider.append_axes("right", size="5%", pad=0.05)
+        fig.colorbar(img1, cax=cax1)
 
     h, w = beam.shape * pix_size
 
@@ -339,8 +345,11 @@ def spot_plot(beam, pix_size = None, cmap='plasma'):
     ax2.plot(a_x, a_y, 'o:', color="white", lw=1, markersize = 1)
     ax2.plot(b_x, b_y, 'o:', color="white", lw=1, markersize = 1)
     
+    if just_spot:
+        # If all we want is the spot check, our job is done
+        return
+    
     # Draw lineout of intensity along each axis
-
     # Determine which axis is semimajor and semiminor
     if r_x >= r_y:
         a_ax = ax3

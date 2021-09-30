@@ -237,7 +237,7 @@ def plot_ionization(x, y, intensity, ion_population, longitudinal=False, ncontou
     cbar1 = fig.colorbar(colors1, cax=cax1)
     cbar1.set_label("Intensity (W/cm$^2$)")
 
-    colors2 = ax2.contourf(X, Y, ion_population, ncontours, cmap="plasma", vmin=0, vmax=100)
+    colors2 = ax2.pcolormesh(X.value, Y.value, ion_population, cmap="plasma")#, vmin=0, vmax=100)
 
     ax2.set_xlabel(x_label)
     ax2.set_ylabel(y_label)
